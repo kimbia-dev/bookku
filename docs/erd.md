@@ -30,6 +30,7 @@ erDiagram
   USER ||--o{ CHAT_MESSAGE : sends
   USER ||--o{ NOTIFICATION : "receives (as recipient)"
   USER ||--o{ NOTIFICATION : "triggers (as actor)"
+  USER ||--o{ EMAIL_VERIFICATION : "has (upsert, 최대 1건 유지)"
   BOOK ||--o{ REVIEW : "reviewed in"
   BOOK ||--o{ POST : "listed in"
   POST ||--o{ POST_LIKE : "liked by"
@@ -61,7 +62,7 @@ erDiagram
 
   EMAIL_VERIFICATION {
     int id PK
-    string email
+    int user_id FK
     string code
     timestamp expires_at
     timestamp created_at
