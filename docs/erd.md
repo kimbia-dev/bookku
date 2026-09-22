@@ -48,8 +48,8 @@ erDiagram
   USER {
     int id PK
     uuid uuid UK "외부 노출용 식별자"
-    string username
-    string email
+    string username UK
+    string email UK
     string password
     string nickname
     string bio
