@@ -54,8 +54,17 @@ erDiagram
     string nickname
     string bio
     string profile_image_url
+    boolean email_verified
     timestamp created_at
     timestamp updated_at
+  }
+
+  EMAIL_VERIFICATION {
+    int id PK
+    string email
+    string code
+    timestamp expires_at
+    timestamp created_at
   }
 
   BOOK {
