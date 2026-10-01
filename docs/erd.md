@@ -31,6 +31,7 @@ erDiagram
   USER ||--o{ NOTIFICATION : "receives (as recipient)"
   USER ||--o{ NOTIFICATION : "triggers (as actor)"
   USER ||--o{ EMAIL_VERIFICATION : "has (upsert, 최대 1건 유지)"
+  USER ||--o{ SOCIAL_ACCOUNT : connects
   BOOK ||--o{ REVIEW : "reviewed in"
   BOOK ||--o{ POST : "listed in"
   POST ||--o{ POST_LIKE : "liked by"
@@ -66,6 +67,14 @@ erDiagram
     string code
     timestamp expires_at
     timestamp created_at
+  }
+
+  SOCIAL_ACCOUNT {
+      int id PK
+      int user_id PK
+      string provider
+      string provider_user_id
+      timestamp created_at
   }
 
   BOOK {
@@ -241,6 +250,8 @@ erDiagram
 | REVIEW_COMMENT_LIKE | `UNIQUE(user_id, review_comment_id)` | 리뷰 댓글에 중복 좋아요 방지 |
 | SUBSCRIBE | `UNIQUE(follower_id, following_id)` | 중복 구독 방지 |
 | SUBSCRIBE | `CHECK(follower_id != following_id)` | 자기 자신 구독 방지 |
+| SOCIAL_ACCOUNT | `UNIQUE(user_id, provider)` | 한 사용자가 동일 provider 중복 연결 방지 |
+| SOCIAL_ACCOUNT | `UNIQUE(provider, provider_id)` | 한 소셜 계정이 여러 bookku 계정에 중복 연결 방지 |
 
 ## 4. 구현 시 주의사항
 
