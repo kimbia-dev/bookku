@@ -32,6 +32,7 @@ erDiagram
   USER ||--o{ NOTIFICATION : "triggers (as actor)"
   USER ||--o{ EMAIL_VERIFICATION : "has (upsert, 최대 1건 유지)"
   USER ||--o{ SOCIAL_ACCOUNT : connects
+  USER ||--o{ REFRESH_TOKEN : "has (계정별 여러개의 기기 허용, 동시 로그인 허용)"
   BOOK ||--o{ REVIEW : "reviewed in"
   BOOK ||--o{ POST : "listed in"
   POST ||--o{ POST_LIKE : "liked by"
@@ -64,17 +65,26 @@ erDiagram
   EMAIL_VERIFICATION {
     int id PK
     int user_id FK
-    string code
+    string token
     timestamp expires_at
     timestamp created_at
   }
 
   SOCIAL_ACCOUNT {
       int id PK
-      int user_id PK
+      int user_id FK
       string provider
       string provider_user_id
       timestamp created_at
+  }
+
+  REFRESH_TOKEN {
+    int id PK
+    int user_id FK
+    string token UK
+    string device_info "기기 구분용(User-Agent, 기기명 등)"
+    timestamp expires_at
+    timestamp created_at
   }
 
   BOOK {
@@ -251,7 +261,8 @@ erDiagram
 | SUBSCRIBE | `UNIQUE(follower_id, following_id)` | 중복 구독 방지 |
 | SUBSCRIBE | `CHECK(follower_id != following_id)` | 자기 자신 구독 방지 |
 | SOCIAL_ACCOUNT | `UNIQUE(user_id, provider)` | 한 사용자가 동일 provider 중복 연결 방지 |
-| SOCIAL_ACCOUNT | `UNIQUE(provider, provider_id)` | 한 소셜 계정이 여러 bookku 계정에 중복 연결 방지 |
+| SOCIAL_ACCOUNT | `UNIQUE(provider, provider_user_id)` | 한 소셜 계정이 여러 bookku 계정에 중복 연결 방지 |
+| EMAIL_VERIFICATION | `UNIQUE(user_id)`| 사용자당 인증 코드 1건만 유지(upsert) |
 
 ## 4. 구현 시 주의사항
 
