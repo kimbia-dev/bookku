@@ -83,6 +83,7 @@ erDiagram
     int user_id FK
     string token UK
     string device_info "기기 구분용(User-Agent, 기기명 등)"
+    string device_id "클라이언트가 생성한 UUID"
     timestamp expires_at
     timestamp created_at
   }
@@ -263,6 +264,7 @@ erDiagram
 | SOCIAL_ACCOUNT | `UNIQUE(user_id, provider)` | 한 사용자가 동일 provider 중복 연결 방지 |
 | SOCIAL_ACCOUNT | `UNIQUE(provider, provider_user_id)` | 한 소셜 계정이 여러 bookku 계정에 중복 연결 방지 |
 | EMAIL_VERIFICATION | `UNIQUE(user_id)`| 사용자당 인증 코드 1건만 유지(upsert) |
+| REFRESH_TOKEN | `UNIQUE(user_id, device_id)` | 같은 사용자의 같은 기기는 1건만 유지 |
 
 ## 4. 구현 시 주의사항
 
