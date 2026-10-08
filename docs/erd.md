@@ -30,7 +30,7 @@ erDiagram
   USER ||--o{ CHAT_MESSAGE : sends
   USER ||--o{ NOTIFICATION : "receives (as recipient)"
   USER ||--o{ NOTIFICATION : "triggers (as actor)"
-  USER ||--o{ EMAIL_VERIFICATION : "has (upsert, 최대 1건 유지)"
+  USER ||--o{ VERIFICATION_TOKEN : "has (upsert, type별 최대 1건 유지)"
   USER ||--o{ SOCIAL_ACCOUNT : connects
   USER ||--o{ REFRESH_TOKEN : "has (계정별 여러개의 기기 허용, 동시 로그인 허용)"
   BOOK ||--o{ REVIEW : "reviewed in"
@@ -62,10 +62,12 @@ erDiagram
     timestamp updated_at
   }
 
-  EMAIL_VERIFICATION {
+  VERIFICATION_TOKEN {
     int id PK
     int user_id FK
-    string token
+    string token UK
+    string type "EMAIL_VERIFICATION / PASSWORD_RESET / EMAIL_CHANGE"
+    string new_email "EMAIL_CHANGE일 때만 사용, nullable"
     timestamp expires_at
     timestamp created_at
   }
@@ -92,13 +94,11 @@ erDiagram
     int id PK
     string isbn UK
     string title
-    string author
-    string publisher
-    string cover_image_url
+    string author "nullable"
+    string publisher "nullable"
+    string cover_image_url "nullable"
     int original_price "정가, nullable"
-    text description "출판사 제공 책소개"
-    string external_source "도서 검색 API 제공자"
-    string external_id "API가 제공하는 도서 ID"
+    text description "출판사 제공 책소개, nullable"
     timestamp created_at
     timestamp updated_at
   }
@@ -263,7 +263,7 @@ erDiagram
 | SUBSCRIBE | `CHECK(follower_id != following_id)` | 자기 자신 구독 방지 |
 | SOCIAL_ACCOUNT | `UNIQUE(user_id, provider)` | 한 사용자가 동일 provider 중복 연결 방지 |
 | SOCIAL_ACCOUNT | `UNIQUE(provider, provider_user_id)` | 한 소셜 계정이 여러 bookku 계정에 중복 연결 방지 |
-| EMAIL_VERIFICATION | `UNIQUE(user_id)`| 사용자당 인증 코드 1건만 유지(upsert) |
+| VERIFICATION_TOKEN | `UNIQUE(user_id, type)`| 사용자당 용도별 토큰 1건만 유지(upsert) |
 | REFRESH_TOKEN | `UNIQUE(user_id, device_id)` | 같은 사용자의 같은 기기는 1건만 유지 |
 
 ## 4. 구현 시 주의사항
@@ -284,3 +284,12 @@ erDiagram
   - 알림함은 여러 도메인 이벤트(POST, COMMENT, REVIEW_LIKE, SUBSCRIBE ...)를 하나의 시간순 피드로 "통합 조회"하는 것이 목적
   - 알림 조회시 스냅샷(preview_text)을 사용해 원본 테이블을 조회할 필요가 없기 때문에 JOIN이 불필요
   - 알림 대상 도메인 확장 가능성 높음
+- **BOOK 테이블의 external_source, external_id 필드를 삭제한 이유**
+  - 초기 설계 단계에서 ISBN이 없는 책을 대비하여 API가 제공하는 고유 ID로 원본을 다시 찾기 위해 생성했으나, 설계가 구체화되면서 ISBN이 없는 책은 애초에 저장되지 않도록 하면서 필요성 사라짐
+  - 도서 검색 API를 확정 지으면서 다음(카카오) API에서는 API 고유 ID를 제공하지 않음을 확인
+  - 다음(카카오) API에서 조회할 수 없는 도서는 국립중앙도서관 API에서 보강하고, 추후 API 정책 변경에 따라 다음(카카오) API의 데이터만 지우거나 갱신해야 하는 상황에 대비해 남겨두려 했으나, 현실적으로 대부분의 데이터는 다음(카카오)에서 조회되기 때문에 필터링에 따른 의미있는 처리량 감소를 기대할 수 없음
+  - 대신 전체 행을 주기적으로 재조회해서 정기적으로 갱신 예정
+- **BOOK 테이블의 대부분의 필드를 nullable로 변경한 이유**
+  - 도서 검색 API와 도서마다 NULL인 필드가 제각각임
+  - 도서 검색 API가 변경 등의 이유로 BOOK 테이블의 데이터를 갱신할 때, 갱신값을 받을 수 없다면 NULL로 변경해야 하는데 NOT NULL로 제약을 두면 변경이 불가하기 때문에 이전 데이터를 남기게 됨 (빈 문자열이나 0으로 대체하는건 피하기로함)
+  - 도서 제목은 특정 API 고유의 정보가 아니며, 리뷰/거래글의 핵심 정보이기 때문에 NOT NULL로 남겨둠
