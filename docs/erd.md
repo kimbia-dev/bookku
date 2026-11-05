@@ -11,6 +11,8 @@ USER, BOOK을 중심으로 거래(POST), 리뷰(REVIEW), 커뮤니티(COMMUNITY)
 
 ## 2. ERD
 
+- 모든 테이블은 created_at, updated_at 컬럼을 갖는다. (각 테이블 명세에서는 생략)
+
 ```mermaid
 erDiagram
   USER ||--o{ POST : writes
@@ -58,8 +60,6 @@ erDiagram
     string bio
     string profile_image_url
     boolean email_verified
-    timestamp created_at
-    timestamp updated_at
   }
 
   VERIFICATION_TOKEN {
@@ -69,7 +69,6 @@ erDiagram
     string type "EMAIL_VERIFICATION / PASSWORD_RESET / EMAIL_CHANGE"
     string new_email "EMAIL_CHANGE일 때만 사용, nullable"
     timestamp expires_at
-    timestamp created_at
   }
 
   SOCIAL_ACCOUNT {
@@ -77,7 +76,6 @@ erDiagram
       int user_id FK
       string provider
       string provider_user_id
-      timestamp created_at
   }
 
   REFRESH_TOKEN {
@@ -87,7 +85,6 @@ erDiagram
     string device_info "기기 구분용(User-Agent, 기기명 등)"
     string device_id "클라이언트가 생성한 UUID"
     timestamp expires_at
-    timestamp created_at
   }
 
   BOOK {
@@ -99,8 +96,6 @@ erDiagram
     string cover_image_url "nullable"
     int original_price "정가, nullable"
     text description "출판사 제공 책소개, nullable"
-    timestamp created_at
-    timestamp updated_at
   }
 
   REVIEW {
@@ -111,8 +106,6 @@ erDiagram
     string title
     text content
     decimal rating "0에서 5까지 0.5 단위 지원"
-    timestamp created_at
-    timestamp updated_at
   }
 
   POST {
@@ -125,8 +118,6 @@ erDiagram
     int price "판매글에만 사용"
     string book_condition "HIGH / MEDIUM / LOW"
     string trade_status "SELLING / RESERVED / SOLD_OUT"
-    timestamp created_at
-    timestamp updated_at
   }
 
   CHAT_ROOM {
@@ -134,7 +125,6 @@ erDiagram
     string external_room_id UK "외부 API 발급 ID"
     int user_a_id FK
     int user_b_id FK
-    timestamp created_at
   }
 
   CHAT_MESSAGE {
@@ -156,7 +146,6 @@ erDiagram
     string content
     string linked_target_type "POST / REVIEW / COMMUNITY 등, nullable"
     int linked_target_id "nullable"
-    timestamp created_at
   }
 
   COMMUNITY_COMMENT {
@@ -165,8 +154,6 @@ erDiagram
     int user_id FK
     text content
     int parent_comment_id FK "대댓글의 원댓글의, nullable"
-    timestamp created_at
-    timestamp updated_at
   }
 
   REVIEW_COMMENT {
@@ -175,43 +162,36 @@ erDiagram
     int user_id FK
     text content
     int parent_comment_id FK "대댓글의 원댓글 ID, nullable"
-    timestamp created_at
-    timestamp updated_at
   }
 
   POST_LIKE {
     int id PK
     int user_id FK
     int post_id FK
-    timestamp created_at
   }
 
   REVIEW_LIKE {
     int id PK
     int user_id FK
     int review_id FK
-    timestamp created_at
   }
 
   COMMUNITY_LIKE {
     int id PK
     int user_id FK
     int community_id FK
-    timestamp created_at
   }
 
   COMMUNITY_COMMENT_LIKE {
     int id PK
     int user_id FK
     int community_comment_id FK
-    timestamp created_at
   }
 
   REVIEW_COMMENT_LIKE {
     int id PK
     int user_id FK
     int review_comment_id FK
-    timestamp created_at
   }
 
   POST_IMAGE {
@@ -232,7 +212,6 @@ erDiagram
     int id PK
     int follower_id FK
     int following_id FK
-    timestamp created_at
   }
 
   NOTIFICATION {
@@ -244,7 +223,6 @@ erDiagram
     int target_id "nullable"
     string preview_text "알림 문구 스냅샷"
     boolean is_read
-    timestamp created_at
   }
 ```
 
