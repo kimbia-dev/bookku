@@ -91,7 +91,8 @@ erDiagram
     int id PK
     string isbn UK
     string title
-    string author "nullable"
+    json authors "nullable"
+    json translators "nullabe"
     string publisher "nullable"
     string cover_image_url "nullable"
     int original_price "정가, nullable"
