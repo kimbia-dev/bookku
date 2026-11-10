@@ -96,6 +96,7 @@ erDiagram
     string cover_image_url "nullable"
     int original_price "정가, nullable"
     text description "출판사 제공 책소개, nullable"
+    date published_data "nullable"
   }
 
   REVIEW {
