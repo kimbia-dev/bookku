@@ -35,8 +35,10 @@ erDiagram
   USER ||--o{ VERIFICATION_TOKEN : "has (upsert, type별 최대 1건 유지)"
   USER ||--o{ SOCIAL_ACCOUNT : connects
   USER ||--o{ REFRESH_TOKEN : "has (계정별 여러개의 기기 허용, 동시 로그인 허용)"
+  USER ||--o{ LIBRARY_ITEM : owns
   BOOK ||--o{ REVIEW : "reviewed in"
   BOOK ||--o{ POST : "listed in"
+  BOOK ||--o{ LIBRARY_ITEM : "shelved in"
   POST ||--o{ POST_LIKE : "liked by"
   POST ||--o{ POST_IMAGE : has
   REVIEW ||--o{ REVIEW_LIKE : "liked by"
@@ -226,6 +228,15 @@ erDiagram
     string preview_text "알림 문구 스냅샷"
     boolean is_read
   }
+
+  LIBRARY_ITEM {
+    int id PK
+    int user_id FK
+    int book_id FK
+    string status "READING / READ"
+    timestamp created_at
+    timestamp updated_at
+  }
 ```
 
 ## 3. 제약조건
@@ -245,6 +256,7 @@ erDiagram
 | SOCIAL_ACCOUNT | `UNIQUE(provider, provider_user_id)` | 한 소셜 계정이 여러 bookku 계정에 중복 연결 방지 |
 | VERIFICATION_TOKEN | `UNIQUE(user_id, type)`| 사용자당 용도별 토큰 1건만 유지(upsert) |
 | REFRESH_TOKEN | `UNIQUE(user_id, device_id)` | 같은 사용자의 같은 기기는 1건만 유지 |
+| LIBRARY_ITEM | `UNIQUE(user_id, book_id)` | 한 사용자가 같은 책을 중복 담기 방지 |
 
 ## 4. 구현 시 주의사항
 
