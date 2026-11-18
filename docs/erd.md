@@ -118,7 +118,7 @@ erDiagram
     int book_id FK
     int user_id FK
     uuid uuid UK "외부 노출용 식별자"
-    text content
+    text content "nullable"
     int price "판매글에만 사용"
     string book_condition "HIGH / MEDIUM / LOW"
     string trade_status "SELLING / RESERVED / SOLD_OUT"
