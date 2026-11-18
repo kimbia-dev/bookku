@@ -110,6 +110,7 @@ erDiagram
     string title
     text content
     decimal rating "0에서 5까지 0.5 단위 지원"
+    int view_count
   }
 
   POST {
@@ -122,6 +123,7 @@ erDiagram
     int price "판매글에만 사용"
     string book_condition "HIGH / MEDIUM / LOW"
     string trade_status "SELLING / RESERVED / SOLD_OUT"
+    int view_count
   }
 
   CHAT_ROOM {
@@ -150,6 +152,7 @@ erDiagram
     string content
     string linked_target_type "POST / REVIEW / COMMUNITY 등, nullable"
     int linked_target_id "nullable"
+    int view_count
   }
 
   COMMUNITY_COMMENT {
