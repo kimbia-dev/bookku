@@ -128,7 +128,7 @@ erDiagram
 
   CHAT_ROOM {
     int id PK
-    string external_room_id UK "외부 API 발급 ID"
+    string uuid UK
     int user_a_id FK
     int user_b_id FK
   }
