@@ -131,6 +131,10 @@ erDiagram
     string uuid UK
     int user_a_id FK
     int user_b_id FK
+    int last_message_id "마지막 메시지, nullable"
+    timestamp last_message_at "nullable"
+    int user_a_last_read_message_id "nullable"
+    int user_b_last_read_message_id "nullable"
   }
 
   CHAT_MESSAGE {
@@ -288,3 +292,7 @@ erDiagram
   - 도서 검색 API와 도서마다 NULL인 필드가 제각각임
   - 도서 검색 API가 변경 등의 이유로 BOOK 테이블의 데이터를 갱신할 때, 갱신값을 받을 수 없다면 NULL로 변경해야 하는데 NOT NULL로 제약을 두면 변경이 불가하기 때문에 이전 데이터를 남기게 됨 (빈 문자열이나 0으로 대체하는건 피하기로함)
   - 도서 제목은 특정 API 고유의 정보가 아니며, 리뷰/거래글의 핵심 정보이기 때문에 NOT NULL로 남겨둠
+- **CHAT_ROOM 테이블의 메시지 관련 필드에 FK 제약을 걸지 않은 이유**
+  - 순환 참조 방지 (CHAT_MESSAGE -> CHAT_ROOM -> CHAT_MESSAGE)
+  - 실제 메시지 값을 불러오기 위한 필드가 아니라 크기 비교용이기에 FK로 묶을 필요 없음
+  - 메시지를 보낼 때마다 컬럼을 갱신하는데, FK가 있으면 그때마다 DB가 참조 무결성을 검사해야함
