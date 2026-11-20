@@ -145,8 +145,6 @@ erDiagram
     string message_type "TEXT / IMAGE / SHARE_CARD"
     string linked_target_type "POST / REVIEW / COMMUNITY 등, nullable"
     int linked_target_id "nullable"
-    boolean is_read "수신자 읽음 여부"
-    timestamp sent_at
   }
 
   COMMUNITY {
@@ -292,6 +290,9 @@ erDiagram
   - 도서 검색 API와 도서마다 NULL인 필드가 제각각임
   - 도서 검색 API가 변경 등의 이유로 BOOK 테이블의 데이터를 갱신할 때, 갱신값을 받을 수 없다면 NULL로 변경해야 하는데 NOT NULL로 제약을 두면 변경이 불가하기 때문에 이전 데이터를 남기게 됨 (빈 문자열이나 0으로 대체하는건 피하기로함)
   - 도서 제목은 특정 API 고유의 정보가 아니며, 리뷰/거래글의 핵심 정보이기 때문에 NOT NULL로 남겨둠
+- **CHAT_MESSAGE 테이블의 is_read 필드를 없애고, CHAT_ROOM에서 마지막으로 읽은 메시지를 저장한 이유**
+  - 메시지를 읽었는지를 CHAT_MESSAGE 테이블에서 관리하면, 한 번 채팅방을 읽을 때마다 다수의 컬럼을 변경해야함
+  - CHAT_ROOM 테이블에 마지막으로 읽은 메시지를 저장하면 채팅방을 읽을 때 하나의 행만 변경하면 되고, 읽음/읽지 않음 여부도 저장된 메시지의 정보로 판단 가능함
 - **CHAT_ROOM 테이블의 메시지 관련 필드에 FK 제약을 걸지 않은 이유**
   - 순환 참조 방지 (CHAT_MESSAGE -> CHAT_ROOM -> CHAT_MESSAGE)
   - 실제 메시지 값을 불러오기 위한 필드가 아니라 크기 비교용이기에 FK로 묶을 필요 없음
