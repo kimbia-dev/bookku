@@ -30,6 +30,7 @@ erDiagram
   USER ||--o{ CHAT_ROOM : "participates as A"
   USER ||--o{ CHAT_ROOM : "participates as B"
   USER ||--o{ CHAT_MESSAGE : sends
+  USER ||--o{ CHAT_MESSAGE_IMAGE : uploads
   USER ||--o{ NOTIFICATION : "receives (as recipient)"
   USER ||--o{ NOTIFICATION : "triggers (as actor)"
   USER ||--o{ VERIFICATION_TOKEN : "has (upsert, type별 최대 1건 유지)"
@@ -51,6 +52,8 @@ erDiagram
   COMMUNITY_COMMENT ||--o{ COMMUNITY_COMMENT_LIKE : "liked by"
   COMMUNITY_COMMENT ||--o{ COMMUNITY_COMMENT : "replies to"
   CHAT_ROOM ||--o{ CHAT_MESSAGE : contains
+  CHAT_ROOM ||--o{ CHAT_MESSAGE_IMAGE : "uploaded in"
+  CHAT_MESSAGE ||--o{ CHAT_MESSAGE_IMAGE : has
 
   USER {
     int id PK
@@ -145,6 +148,15 @@ erDiagram
     string message_type "TEXT / IMAGE / SHARE_CARD"
     string linked_target_type "POST / REVIEW / COMMUNITY 등, nullable"
     int linked_target_id "nullable"
+  }
+
+  CHAT_MESSAGE_IMAGE {
+    int id PK
+    int message_id FK "메시지 전송 전에는 null"
+    int room_id FK "업로드한 채팅방"
+    int uploader_id FK
+    string image_url
+    int display_order
   }
 
   COMMUNITY {
