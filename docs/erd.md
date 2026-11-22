@@ -138,6 +138,10 @@ erDiagram
     timestamp last_message_at "nullable"
     int user_a_last_read_message_id "nullable"
     int user_b_last_read_message_id "nullable"
+    timestamp user_a_left_at "nullable"
+    timestamp user_b_left_at "nullable"
+    int user_a_visible_after_message_id "A에게 해당 채팅 이후부터 노출"
+    int user_b_visible_after_message_id "B에게 해당 채팅 이후부터 노출"
   }
 
   CHAT_MESSAGE {
