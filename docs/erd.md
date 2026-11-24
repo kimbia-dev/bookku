@@ -174,6 +174,7 @@ erDiagram
     string linked_target_type "POST / REVIEW / COMMUNITY 등, nullable"
     int linked_target_id "nullable"
     int like_count
+    int comment_count
   }
 
   COMMUNITY_COMMENT {
