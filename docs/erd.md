@@ -114,6 +114,8 @@ erDiagram
     text content
     decimal rating "0에서 5까지 0.5 단위 지원"
     int view_count
+    int like_count
+    int comment_count
   }
 
   POST {
@@ -127,6 +129,7 @@ erDiagram
     string book_condition "HIGH / MEDIUM / LOW"
     string trade_status "SELLING / RESERVED / SOLD_OUT"
     int view_count
+    int like_count
   }
 
   CHAT_ROOM {
