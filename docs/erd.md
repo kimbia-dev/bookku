@@ -170,9 +170,10 @@ erDiagram
     int id PK
     int user_id FK
     uuid uuid UK "외부 노출용 식별자"
-    string content
-    string linked_target_type "POST / REVIEW / COMMUNITY 등, nullable"
+    string content "nullable"
+    string linked_target_type "공유 대상 REVIEW / COMMUNITY, nullable"
     int linked_target_id "nullable"
+    string repost_target_type "리포스트 대상 REVIEW / COMMUNITY, nullable"
     int like_count
     int comment_count
   }
@@ -270,6 +271,7 @@ erDiagram
 |---|---|---|
 | REVIEW | `UNIQUE(user_id, book_id)` | 하나의 도서에 중복 리뷰 작성 방지 |
 | CHAT_ROOM | `UNIQUE(user_a_id, user_b_id)` | 두 사용자 간 중복 채팅방 방지 |
+| COMMUNITY | `UNIQUE(user_id, repost_target_type, repost_target_id)` | 같은 대상 중복 리포스트 방지 |
 | POST_LIKE | `UNIQUE(user_id, post_id)` | 거래글에 중복 좋아요 방지 |
 | REVIEW_LIKE | `UNIQUE(user_id, review_id)` | 리뷰에 중복 좋아요 방지 |
 | COMMUNITY_LIKE | `UNIQUE(user_id, community_id)` | 커뮤니티글에 중복 좋아요 방지 |
