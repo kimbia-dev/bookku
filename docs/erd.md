@@ -171,9 +171,9 @@ erDiagram
     int user_id FK
     uuid uuid UK "외부 노출용 식별자"
     string content "nullable"
-    string linked_target_type "공유 대상 REVIEW / COMMUNITY, nullable"
+    string linked_target_type "공유 대상 POST / REVIEW / COMMUNITY, nullable"
     int linked_target_id "nullable"
-    string repost_target_type "리포스트 대상 REVIEW / COMMUNITY, nullable"
+    string repost_target_type "리포스트 대상 COMMUNITY, nullable"
     int like_count
     int comment_count
   }
