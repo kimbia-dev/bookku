@@ -46,6 +46,7 @@ erDiagram
   REVIEW ||--o{ REVIEW_COMMENT : has
   REVIEW_COMMENT ||--o{ REVIEW_COMMENT : "replies to"
   REVIEW_COMMENT ||--o{ REVIEW_COMMENT_LIKE : "liked by"
+  COMMUNITY ||--o{ COMMUNITY : "reposted as"
   COMMUNITY ||--o{ COMMUNITY_LIKE : "liked by"
   COMMUNITY ||--o{ COMMUNITY_COMMENT : has
   COMMUNITY ||--o{ COMMUNITY_IMAGE : has
@@ -173,7 +174,7 @@ erDiagram
     string content "nullable"
     string linked_target_type "공유 대상 POST / REVIEW / COMMUNITY, nullable"
     int linked_target_id "nullable"
-    string repost_target_type "리포스트 대상 COMMUNITY, nullable"
+    int repost_target_id "리포스트 대상 COMMUNITY, nullable"
     int like_count
     int comment_count
   }
@@ -274,6 +275,7 @@ erDiagram
 | COMMUNITY | `UNIQUE(user_id, repost_target_type, repost_target_id)` | 같은 대상 중복 리포스트 방지 |
 | POST_LIKE | `UNIQUE(user_id, post_id)` | 거래글에 중복 좋아요 방지 |
 | REVIEW_LIKE | `UNIQUE(user_id, review_id)` | 리뷰에 중복 좋아요 방지 |
+| COMMUNITY | `UNIQUE(user_id, repost_target_id)` | 커뮤니티글 중복 리포스트 방지 |
 | COMMUNITY_LIKE | `UNIQUE(user_id, community_id)` | 커뮤니티글에 중복 좋아요 방지 |
 | COMMUNITY_COMMENT_LIKE | `UNIQUE(user_id, community_comment_id)` | 커뮤니티 댓글에 중복 좋아요 방지 |
 | REVIEW_COMMENT_LIKE | `UNIQUE(user_id, review_comment_id)` | 리뷰 댓글에 중복 좋아요 방지 |
@@ -291,6 +293,10 @@ erDiagram
   - DB 레벨에서는 제약조건 설정이 불가하므로, 애플리케이션 구현 시 반영
 - CHAT_ROOM의 제약조건 UNIQUE(user_a_id, user_b_id) 구현
   - MySQL에서는 UNIQUE(A, B)의 값들을 집합이 아닌 순서가 있는 튜플로 비교하기 때문에, 두 ID 중 작은 값을 항상 A에 넣는 애플리케이션 로직 필요
+- COMMUNITY의 리포스트 구분
+  - 리포스트 여부를 나타내는 별도 컬럼은 두지 않음. `repost_target_type`이 null이면 일반·공유 글, 값이 있으면 리포스트
+  - 리포스트 행은 content가 null이고 이미지·linked_target이 없어야 함
+  - 원본 삭제 시 해당 원본을 가리키는 행도 함께 삭제
 
 ## 5. 설계 노트
 
