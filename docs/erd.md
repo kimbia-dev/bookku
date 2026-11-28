@@ -294,7 +294,7 @@ erDiagram
 - CHAT_ROOM의 제약조건 UNIQUE(user_a_id, user_b_id) 구현
   - MySQL에서는 UNIQUE(A, B)의 값들을 집합이 아닌 순서가 있는 튜플로 비교하기 때문에, 두 ID 중 작은 값을 항상 A에 넣는 애플리케이션 로직 필요
 - COMMUNITY의 리포스트 구분
-  - 리포스트 여부를 나타내는 별도 컬럼은 두지 않음. `repost_target_type`이 null이면 일반·공유 글, 값이 있으면 리포스트
+  - 리포스트 여부를 나타내는 별도 컬럼은 두지 않음. `repost_target_id`이 null이면 일반·공유 글, 값이 있으면 리포스트
   - 리포스트 행은 content가 null이고 이미지·linked_target이 없어야 함
   - 원본 삭제 시 해당 원본을 가리키는 행도 함께 삭제
 
